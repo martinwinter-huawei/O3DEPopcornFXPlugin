@@ -308,7 +308,7 @@ void	PopcornFXRendererLoader::_OnAssetReady(AZ::Data::Asset<AZ::Data::AssetData>
 					m_LoadedVariants.Remove(variantID);
 				m_LoadedVariants.Insert(variantID, shaderVariant.GetShaderVariantAsset());
 
-				AZ::RHI::ConstPtr<AZ::RHI::PipelineState>	&pipelineStateSlot = _GetPipelineStateSlot(cache.m_Type, *pipelineStateCache);
+				AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>	&pipelineStateSlot = _GetPipelineStateSlot(cache.m_Type, *pipelineStateCache);
 				pipelineStateSlot = _CreatePipelineStateCache(*shader, shaderVariant, cache.m_Type, cache.m_PipelineStateKey);
 
 				if (!PK_VERIFY(m_ModifiedCaches.PushBack(*pipelineStateCache).Valid()))
@@ -538,7 +538,7 @@ void	PopcornFXRendererLoader::_OnShaderVariantsReloaded(const AZ::Data::AssetId 
 
 			PK_SCOPEDLOCK_WRITE((*pipelineStateCache)->m_Lock);
 
-			AZ::RHI::ConstPtr<AZ::RHI::PipelineState>	&pipelineStateSlot = _GetPipelineStateSlot(cache.m_Type, *pipelineStateCache);
+			AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>	&pipelineStateSlot = _GetPipelineStateSlot(cache.m_Type, *pipelineStateCache);
 			pipelineStateSlot = _CreatePipelineStateCache(*shader, shaderVariant, cache.m_Type, cache.m_PipelineStateKey);
 			if (!PK_VERIFY(m_ModifiedCaches.PushBack(*pipelineStateCache).Valid()))
 				return;
@@ -556,7 +556,7 @@ void	PopcornFXRendererLoader::_OnShaderVariantsReloaded(const AZ::Data::AssetId 
 
 //----------------------------------------------------------------------------
 
-AZ::RHI::ConstPtr<AZ::RHI::PipelineState>	PopcornFXRendererLoader::_CreatePipelineStateCache(	AZ::RPI::Shader &shader,
+AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>	PopcornFXRendererLoader::_CreatePipelineStateCache(	AZ::RPI::Shader &shader,
 																								AZ::RPI::ShaderVariant &shaderVariant,
 																								EAssetType assetType,
 																								const SPipelineStateCacheKey &key)
@@ -683,7 +683,7 @@ AZ::RHI::ConstPtr<AZ::RHI::PipelineState>	PopcornFXRendererLoader::_CreatePipeli
 	//		if (key.m_BlendMode == BlendMode::Solid || key.m_BlendMode == BlendMode::Masked)
 
 	scene->ConfigurePipelineState(shader.GetDrawListTag(), pipelineStateDesc);
-	AZ::RHI::ConstPtr<AZ::RHI::PipelineState>	pipelineState = shader.AcquirePipelineState(pipelineStateDesc);
+	AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>	pipelineState = shader.AcquirePipelineState(pipelineStateDesc);
 	if (!PK_VERIFY(pipelineState != null))
 	{
 		CLog::Log(PK_ERROR, "Failed to acquire default pipeline state for shader '%s'", shaderPath);
@@ -728,7 +728,7 @@ AZ::Data::Instance<AZ::RPI::Shader>	&PopcornFXRendererLoader::_GetShaderSlot(EAs
 
 //----------------------------------------------------------------------------
 
-AZ::RHI::ConstPtr<AZ::RHI::PipelineState>	&PopcornFXRendererLoader::_GetPipelineStateSlot(EAssetType type, const PPipelineStateCache &pipelineState) const
+AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>	&PopcornFXRendererLoader::_GetPipelineStateSlot(EAssetType type, const PPipelineStateCache &pipelineState) const
 {
 	if (type == AssetType_MaterialShader)
 		return pipelineState->m_MaterialPipelineState;

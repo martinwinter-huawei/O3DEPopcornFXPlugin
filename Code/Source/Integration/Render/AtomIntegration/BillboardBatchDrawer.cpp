@@ -267,7 +267,7 @@ bool	CBillboardBatchDrawer::MapBuffers(SRenderContext &ctx, const SRendererBatch
 			if (!PK_VERIFY(m_MappedAdditionalShaderInputs.PushBack().Valid()))
 				return false;
 			Drawers::SCopyFieldDesc			&desc = m_MappedAdditionalShaderInputs.Last();
-			AZ::RHI::Ptr<AZ::RHI::Buffer>	buff = GetCurBuffers().FindAdditionalFieldBuffer(curAdditionalShaderInput.m_Name);
+			AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	buff = GetCurBuffers().FindAdditionalFieldBuffer(curAdditionalShaderInput.m_Name);
 			const AZ::u64					typeByteSize = CBaseTypeTraits::Traits(curAdditionalShaderInput.m_Type).Size;
 			u8								*data = static_cast<u8*>(renderManager->MapBuffer(buff, particleCount * typeByteSize));
 
@@ -348,94 +348,94 @@ bool	CBillboardBatchDrawer::EmitDrawCall(SRenderContext &ctx, const SRendererBat
 	// The pipeline cache handles the buffer bindings for the draw call:
 	// Add draw instance vertex and index buffers:
 	PK_ASSERT(m_DrawInstanceVtx != null && m_DrawInstanceIdx != null);
-	m_PipelineCaches[0].SetVertexInputBuffer(DrawInstanceTexCoords_Vertex, AZ::RHI::StreamBufferView(*m_DrawInstanceVtx, 0, m_DrawInstanceVtxCount * sizeof(CFloat2), sizeof(CFloat2)));
-	m_PipelineCaches[0].SetIndexBuffer(AZ::RHI::IndexBufferView(*m_DrawInstanceIdx, 0, m_DrawInstanceIdxCount * sizeof(u16), AZ::RHI::IndexFormat::Uint16));
+	m_PipelineCaches[0].SetVertexInputBuffer(DrawInstanceTexCoords_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*m_DrawInstanceVtx, 0, m_DrawInstanceVtxCount * sizeof(CFloat2), sizeof(CFloat2)));
+	m_PipelineCaches[0].SetIndexBuffer(AZ::RHI::MultiDeviceIndexBufferView(*m_DrawInstanceIdx, 0, m_DrawInstanceIdxCount * sizeof(u16), AZ::RHI::IndexFormat::Uint16));
 	m_PipelineCaches[0].SetBillboardingSrgConstantValue(BillboardSrg::RendererFlags_ShaderRead, rendererCache->m_BasicDescription.m_RendererFlags);
 
 	if (m_AtlasDefinition != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = m_AtlasDefinition->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, m_AtlasSubRectsCount, sizeof(CFloat4)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = m_AtlasDefinition->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, m_AtlasSubRectsCount, sizeof(CFloat4)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::AtlasSubRects_ShaderRead, buff);
 		m_PipelineCaches[0].SetBillboardingSrgConstantValue(BillboardSrg::AtlasSubRectsCount_ShaderRead, m_AtlasSubRectsCount);
 	}
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Indices] != null)
 	{
 		// Unsorted indices:
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Indices]->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(u32)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Indices]->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(u32)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticleIndices_ShaderRead, buff);
 	}
 	else if (viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Indices] != null)
 	{
 		// Sorted indices:
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Indices]->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(u32)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Indices]->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(u32)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticleIndices_ShaderRead, buff);
 	}
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticlePosition] != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticlePosition]->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(CFloat4)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticlePosition]->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(CFloat4)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticlePositions_ShaderRead, buff);
 	}
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleRotation] != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleRotation]->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(float)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleRotation]->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(float)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticleRotations_ShaderRead, buff);
 	}
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleAxis0] != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleAxis0]->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount * 3, sizeof(float))); // Cannot use a float3 stride
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleAxis0]->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount * 3, sizeof(float))); // Cannot use a float3 stride
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticleAxis0_ShaderRead, buff);
 	}
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleAxis1] != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleAxis1]->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount * 3, sizeof(float))); // Cannot use a float3 stride
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleAxis1]->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount * 3, sizeof(float))); // Cannot use a float3 stride
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticleAxis1_ShaderRead, buff);
 	}
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleSize] != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleSize]->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(float)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleSize]->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(float)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticleSizes_ShaderRead, buff);
 	}
 	else if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleSize2] != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleSize2]->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(CFloat2)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_ParticleSize2]->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(CFloat2)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticleSizes2_ShaderRead, buff);
 	}
 	// Additional field buffers:
-	AZ::RHI::Ptr<AZ::RHI::Buffer>	textureID = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Atlas_TextureID());
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	textureID = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Atlas_TextureID());
 	if (textureID != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = textureID->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(float)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = textureID->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(float)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticleAtlasID_ShaderRead, buff);
 	}
-	AZ::RHI::Ptr<AZ::RHI::Buffer>	diffuseColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Diffuse_Color());
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	diffuseColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Diffuse_Color());
 	if (diffuseColor != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = diffuseColor->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(CFloat4)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = diffuseColor->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(CFloat4)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticleDiffuseColor_ShaderRead, buff);
 	}
-	AZ::RHI::Ptr<AZ::RHI::Buffer>	emissiveColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Emissive_EmissiveColor());
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	emissiveColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Emissive_EmissiveColor());
 	if (emissiveColor != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = emissiveColor->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount * 3, sizeof(float)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = emissiveColor->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount * 3, sizeof(float)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticleEmissiveColor_ShaderRead, buff);
 	}
-	AZ::RHI::Ptr<AZ::RHI::Buffer>	distortionColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Distortion_Color());
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	distortionColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Distortion_Color());
 	if (distortionColor != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = distortionColor->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(CFloat4)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = distortionColor->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(CFloat4)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticleDistortionColor_ShaderRead, buff);
 	}
-	AZ::RHI::Ptr<AZ::RHI::Buffer>	alphaRemapCursor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_AlphaRemap_Cursor());
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	alphaRemapCursor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_AlphaRemap_Cursor());
 	if (alphaRemapCursor != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = alphaRemapCursor->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(float)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = alphaRemapCursor->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(float)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::ParticleAlphaCursor_ShaderRead, buff);
 	}
 
 	// Draw requests:
 	if (viewIndependent.m_DrawRequests != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = viewIndependent.m_DrawRequests->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, drawRequestsCount, sizeof(Drawers::SBillboardDrawRequest)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = viewIndependent.m_DrawRequests->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, drawRequestsCount, sizeof(Drawers::SBillboardDrawRequest)));
 		m_PipelineCaches[0].SetBillboardingSrgBuffer(BillboardSrg::DrawRequest_ShaderRead, buff);
 	}
 	}

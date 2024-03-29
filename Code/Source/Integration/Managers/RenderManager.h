@@ -10,7 +10,7 @@
 #include "Integration/Render/AtomIntegration/AtomFrameCollector.h"
 #include "Integration/Render/AtomIntegration/AtomRenderDataFactory.h"
 
-#include <Atom/RHI/BufferPool.h>
+#include <Atom/RHI/MultiDeviceBufferPool.h>
 #include <Atom/RPI.Public/Pass/Pass.h>
 
 namespace PopcornFX {
@@ -30,9 +30,9 @@ public:
 	void	StartUpdate(CParticleMediumCollection *mediumCollection, const SSceneViews *sceneViews);
 	void	StopUpdate(CParticleMediumCollection *mediumCollection);
 
-	AZ::RHI::Ptr<AZ::RHI::Buffer>	ResizeOrCreateBufferIFN(AZ::RHI::Ptr<AZ::RHI::Buffer> buffer, AZ::u64 bufferSize, AZ::u32 alignBufferSize = 0x1000);
-	void							*MapBuffer(AZ::RHI::Ptr<AZ::RHI::Buffer> buffer, AZ::u64 sizeToMap);
-	void							UnmapBuffer(AZ::RHI::Ptr<AZ::RHI::Buffer> buffer);
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	ResizeOrCreateBufferIFN(AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer> buffer, AZ::u64 bufferSize, AZ::u32 alignBufferSize = 0x1000);
+	void							*MapBuffer(AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer> buffer, AZ::u64 sizeToMap);
+	void							UnmapBuffer(AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer> buffer);
 
 	const CAtomFrameCollector		&GetFrameCollector() const { return m_FrameCollector; }
 
@@ -42,9 +42,9 @@ public:
 private:
 	void	CollectFrame(CParticleMediumCollection *mediumCollection);
 
-	AZ::RHI::Ptr<AZ::RHI::Buffer>	AllocBuffer(AZ::u64 bufferSize, AZ::RHI::BufferBindFlags binding, AZ::u32 alignSizeOn = 0x10);
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	AllocBuffer(AZ::u64 bufferSize, AZ::RHI::BufferBindFlags binding, AZ::u32 alignSizeOn = 0x10);
 
-	AZ::RHI::Ptr<AZ::RHI::BufferPool>	m_BufferPool;
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferPool>	m_BufferPool;
 
 	CAtomFrameCollector				m_FrameCollector;
 	CAtomRenderDataFactory			m_RenderBatchFactory;

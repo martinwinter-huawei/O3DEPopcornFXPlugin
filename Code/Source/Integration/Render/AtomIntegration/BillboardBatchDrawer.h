@@ -36,11 +36,11 @@ private:
 	// RHI buffers:
 	u32											m_DrawInstanceVtxCount = 0; // 4 for quads, 6 for capsules
 	u32											m_DrawInstanceIdxCount = 0; // 6 for quads, 12 for capsules
-	AZ::RHI::Ptr<AZ::RHI::Buffer>				m_DrawInstanceVtx = null;
-	AZ::RHI::Ptr<AZ::RHI::Buffer>				m_DrawInstanceIdx = null;
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>				m_DrawInstanceVtx = null;
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>				m_DrawInstanceIdx = null;
 
 	// Atlas definition buffer:
-	AZ::RHI::Ptr<AZ::RHI::Buffer>				m_AtlasDefinition = null;
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>				m_AtlasDefinition = null;
 	u32											m_AtlasSubRectsCount = 0;
 };
 

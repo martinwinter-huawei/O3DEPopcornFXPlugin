@@ -79,7 +79,7 @@ namespace PopcornFX {
 
 	//----------------------------------------------------------------------------
 
-	AZ::RHI::Ptr<AZ::RHI::Buffer>				CParticleBuffers::FindAdditionalFieldBuffer(CStringId additionalFieldName)
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>				CParticleBuffers::FindAdditionalFieldBuffer(CStringId additionalFieldName)
 	{
 		SAdditionalField *field = m_AdditionalFields.Find(additionalFieldName);
 
@@ -153,7 +153,7 @@ namespace PopcornFX {
 
 			PK_ASSERT(currentGenBuffer < CParticleBuffers::EGenBuffer::__GenBuffer_Count);
 
-			AZ::RHI::Ptr<AZ::RHI::Buffer>	&currentBufferPtr = viewIndependent.m_GenBuffers[currentGenBuffer];
+			AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	&currentBufferPtr = viewIndependent.m_GenBuffers[currentGenBuffer];
 			const u32						stride = CParticleBuffers::kBufferStrides[currentGenBuffer];
 
 			if (currentGenBuffer == CParticleBuffers::EGenBuffer::GenBuffer_Indices)
@@ -177,7 +177,7 @@ namespace PopcornFX {
 		if (useDrawRequestsBuffer)
 		{
 			const u32						drawRequestsCount = drawPass.m_DrawRequests.Count();
-			AZ::RHI::Ptr<AZ::RHI::Buffer>	&currentBufferPtr = GetCurBuffers().m_ViewIndependent.m_DrawRequests;
+			AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	&currentBufferPtr = GetCurBuffers().m_ViewIndependent.m_DrawRequests;
 			currentBufferPtr = m_RenderContext->m_RenderManager->ResizeOrCreateBufferIFN(currentBufferPtr, drawRequestsCount * sizeof(Drawers::SBillboardDrawRequest), 0x100);
 			success &= currentBufferPtr != null;
 		}
@@ -211,7 +211,7 @@ namespace PopcornFX {
 
 				PK_ASSERT(currentGenBuffer < CParticleBuffers::EGenBuffer::__GenBuffer_Count);
 
-				AZ::RHI::Ptr<AZ::RHI::Buffer>	&currentBufferPtr = GetCurBuffers().m_ViewDependent.m_GenBuffers[currentGenBuffer];
+				AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	&currentBufferPtr = GetCurBuffers().m_ViewDependent.m_GenBuffers[currentGenBuffer];
 				const u32						stride = CParticleBuffers::kBufferStrides[currentGenBuffer];
 
 				if (currentGenBuffer == CParticleBuffers::EGenBuffer::GenBuffer_Indices)

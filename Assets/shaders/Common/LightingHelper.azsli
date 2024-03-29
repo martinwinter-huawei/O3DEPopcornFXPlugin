@@ -98,7 +98,7 @@ ForwardPassOutput 	ComputeParticleLighting(float3 worldPosition,
 
     // Light iterator
     lightingData.tileIterator.Init(position, PassSrg::m_lightListRemapped, PassSrg::m_tileLightData);
-    lightingData.Init(surface.position, surface.normal, surface.roughnessLinear);
+    lightingData.Init(surface.position, surface.normal, surface.roughnessLinear, ViewSrg::m_worldPosition);
 
 #if !PK_O3DE_NEW_LIT
     // Directional light shadow coordinates

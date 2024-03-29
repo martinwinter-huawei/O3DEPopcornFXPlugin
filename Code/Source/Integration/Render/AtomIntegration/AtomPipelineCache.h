@@ -141,7 +141,7 @@ public:
 	bool	InitFromRendererCacheIFN(const CAtomRendererCache *rendererCache);
 	void	Clear();
 
-	void	SetBillboardingSrgBuffer(BillboardSrg::EBuffersSemantic semantic, const AZ::RHI::Ptr<AZ::RHI::BufferView> bufferView);
+	void	SetBillboardingSrgBuffer(BillboardSrg::EBuffersSemantic semantic, const AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> bufferView);
 	template<typename T>
 	void	SetBillboardingSrgConstantValue(BillboardSrg::EConstantsSemantic semantic, const T &value)
 	{
@@ -152,7 +152,7 @@ public:
 		}
 		m_RendererSrg->SetConstant<T>(m_BillboardingSrgConstBindIdx[semantic], value, 0);
 	}
-	void	SetRibbonSrgBuffer(RibbonSrg::EBuffersSemantic semantic, const AZ::RHI::Ptr<AZ::RHI::BufferView> bufferView);
+	void	SetRibbonSrgBuffer(RibbonSrg::EBuffersSemantic semantic, const AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> bufferView);
 	template<typename T>
 	void	SetRibbonSrgConstantValue(RibbonSrg::EConstantsSemantic semantic, const T &value)
 	{
@@ -163,7 +163,7 @@ public:
 		}
 		m_RendererSrg->SetConstant<T>(m_RibbonSrgConstBindIdx[semantic], value, 0);
 	}
-	void	SetMeshSrgBuffer(MeshSrg::EBuffersSemantic semantic, const AZ::RHI::Ptr<AZ::RHI::BufferView> bufferView);
+	void	SetMeshSrgBuffer(MeshSrg::EBuffersSemantic semantic, const AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> bufferView);
 	template<typename T>
 	void	SetMeshSrgConstantValue(MeshSrg::EConstantsSemantic semantic, const T &value)
 	{
@@ -184,10 +184,10 @@ public:
 		}
 		m_MaterialSrg->SetConstant<T>(m_MaterialSrgConstBindIdx[semantic], value, 0);
 	}
-	void	SetMaterialSrgTexture(EMaterialSrgTexturesSemantic semantic, const AZ::RHI::ImageView *imageView);
+	void	SetMaterialSrgTexture(EMaterialSrgTexturesSemantic semantic, const AZ::RHI::MultiDeviceImageView *imageView);
 
-	void	SetVertexInputBuffer(EVertexInputSemantic semantic, const AZ::RHI::StreamBufferView &streamBufferView);
-	void	SetIndexBuffer(const AZ::RHI::IndexBufferView &idxBufferView);
+	void	SetVertexInputBuffer(EVertexInputSemantic semantic, const AZ::RHI::MultiDeviceStreamBufferView &streamBufferView);
+	void	SetIndexBuffer(const AZ::RHI::MultiDeviceIndexBufferView &idxBufferView);
 	void	ConfigureDrawCall(SAtomRenderContext::SDrawCall &drawCall);
 
 	bool	IsInitialized() const { return m_IsInitialized; }
@@ -218,19 +218,19 @@ private:
 
 	CGuid												m_VertexInputsIdx[__Max_VertexInputSemantic];
 
-	AZ::RHI::IndexBufferView							m_IndexBuffer;
-	TSemiDynamicArray<AZ::RHI::StreamBufferView, 0x10>	m_VertexInputs;
+	AZ::RHI::MultiDeviceIndexBufferView							m_IndexBuffer;
+	TSemiDynamicArray<AZ::RHI::MultiDeviceStreamBufferView, 0x10>	m_VertexInputs;
 
-	AZ::RHI::ConstPtr<AZ::RHI::PipelineState>			m_MaterialPipelineState;
+	AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>			m_MaterialPipelineState;
 	AZ::RHI::DrawListTag								m_MaterialDrawList;
 
-	AZ::RHI::ConstPtr<AZ::RHI::PipelineState>			m_OpaqueDepthPipelineState;
+	AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>			m_OpaqueDepthPipelineState;
 	AZ::RHI::DrawListTag								m_OpaqueDepthDrawList;
 
-	AZ::RHI::ConstPtr<AZ::RHI::PipelineState>			m_TransparentDepthMinPipelineState;
+	AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>			m_TransparentDepthMinPipelineState;
 	AZ::RHI::DrawListTag								m_TransparentDepthMinDrawList;
 
-	AZ::RHI::ConstPtr<AZ::RHI::PipelineState>			m_TransparentDepthMaxPipelineState;
+	AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>			m_TransparentDepthMaxPipelineState;
 	AZ::RHI::DrawListTag								m_TransparentDepthMaxDrawList;
 
 	bool												m_IsInitialized;

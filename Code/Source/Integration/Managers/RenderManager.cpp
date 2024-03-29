@@ -99,7 +99,7 @@ void	CRenderManager::StartUpdate(CParticleMediumCollection *mediumCollection, co
 	mediumCollection->m_OnUpdateComplete += FastDelegate<void(CParticleMediumCollection*)>(this, &CRenderManager::CollectFrame);
 }
 
-AZ::RHI::Ptr<AZ::RHI::Buffer>	CRenderManager::ResizeOrCreateBufferIFN(AZ::RHI::Ptr<AZ::RHI::Buffer> buffer, AZ::u64 bufferSize, AZ::u32 alignBufferSize)
+AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	CRenderManager::ResizeOrCreateBufferIFN(AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer> buffer, AZ::u64 bufferSize, AZ::u32 alignBufferSize)
 {
 	if (buffer == null)
 		return AllocBuffer(bufferSize, AZ::RHI::BufferBindFlags::InputAssembly | AZ::RHI::BufferBindFlags::ShaderRead, alignBufferSize);
@@ -108,7 +108,7 @@ AZ::RHI::Ptr<AZ::RHI::Buffer>	CRenderManager::ResizeOrCreateBufferIFN(AZ::RHI::P
 	return buffer;
 }
 
-void	*CRenderManager::MapBuffer(AZ::RHI::Ptr<AZ::RHI::Buffer> buffer, AZ::u64 sizeToMap)
+void	*CRenderManager::MapBuffer(AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer> buffer, AZ::u64 sizeToMap)
 {
 	if (buffer == null)
 		return null;
@@ -124,7 +124,7 @@ void	*CRenderManager::MapBuffer(AZ::RHI::Ptr<AZ::RHI::Buffer> buffer, AZ::u64 si
 	return mapResponse.m_data;
 }
 
-void	CRenderManager::UnmapBuffer(AZ::RHI::Ptr<AZ::RHI::Buffer> buffer)
+void	CRenderManager::UnmapBuffer(AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer> buffer)
 {
 	if (buffer != null)
 		m_BufferPool->UnmapBuffer(*buffer.get());
@@ -172,10 +172,10 @@ void	CRenderManager::CollectFrame(CParticleMediumCollection *mediumCollection)
 
 //----------------------------------------------------------------------------
 
-AZ::RHI::Ptr<AZ::RHI::Buffer>	CRenderManager::AllocBuffer(AZ::u64 bufferSize, AZ::RHI::BufferBindFlags binding, AZ::u32 alignSizeOn)
+AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	CRenderManager::AllocBuffer(AZ::u64 bufferSize, AZ::RHI::BufferBindFlags binding, AZ::u32 alignSizeOn)
 {
 	AZ::u64		alignedBufferSize = Mem::Align(bufferSize, alignSizeOn);
-	AZ::RHI::Ptr<AZ::RHI::Buffer> outBuffer = AZ::RHI::Factory::Get().CreateBuffer();
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer> outBuffer = AZ::RHI::Factory::Get().CreateBuffer();
 	AZ::RHI::BufferInitRequest bufferRequest;
 	bufferRequest.m_descriptor = AZ::RHI::BufferDescriptor{ binding, alignedBufferSize };
 	bufferRequest.m_descriptor.m_alignment = 0x10;

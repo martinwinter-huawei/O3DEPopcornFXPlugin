@@ -195,7 +195,7 @@ bool	CRibbonBatchDrawer::MapBuffers(SRenderContext &ctx, const SRendererBatchDra
 			if (!PK_VERIFY(m_MappedAdditionalShaderInputs.PushBack().Valid()))
 				return false;
 			Drawers::SCopyFieldDesc			&desc = m_MappedAdditionalShaderInputs.Last();
-			AZ::RHI::Ptr<AZ::RHI::Buffer>	buff = GetCurBuffers().FindAdditionalFieldBuffer(curAdditionalShaderInput.m_Name);
+			AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	buff = GetCurBuffers().FindAdditionalFieldBuffer(curAdditionalShaderInput.m_Name);
 			const AZ::u64					typeByteSize = CBaseTypeTraits::Traits(curAdditionalShaderInput.m_Type).Size;
 			u8								*data = static_cast<u8*>(renderManager->MapBuffer(buff, particleCount * typeByteSize));
 
@@ -289,76 +289,76 @@ bool	CRibbonBatchDrawer::EmitDrawCall(SRenderContext &ctx, const SRendererBatchD
 	{
 	// Position:
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Position] != null)
-		m_PipelineCaches[0].SetVertexInputBuffer(Position_Vertex, AZ::RHI::StreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Position], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
+		m_PipelineCaches[0].SetVertexInputBuffer(Position_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Position], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
 	else if (viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Position] != null)
-		m_PipelineCaches[0].SetVertexInputBuffer(Position_Vertex, AZ::RHI::StreamBufferView(*viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Position], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
+		m_PipelineCaches[0].SetVertexInputBuffer(Position_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Position], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
 	// Normal:
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Normal] != null)
-		m_PipelineCaches[0].SetVertexInputBuffer(Normal_Vertex, AZ::RHI::StreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Normal], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
+		m_PipelineCaches[0].SetVertexInputBuffer(Normal_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Normal], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
 	else if (viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Normal] != null)
-		m_PipelineCaches[0].SetVertexInputBuffer(Normal_Vertex, AZ::RHI::StreamBufferView(*viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Normal], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
+		m_PipelineCaches[0].SetVertexInputBuffer(Normal_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Normal], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
 	// Tangent:
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Tangent] != null)
-		m_PipelineCaches[0].SetVertexInputBuffer(Tangent_Vertex, AZ::RHI::StreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Tangent], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
+		m_PipelineCaches[0].SetVertexInputBuffer(Tangent_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Tangent], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
 	else if (viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Tangent] != null)
-		m_PipelineCaches[0].SetVertexInputBuffer(Tangent_Vertex, AZ::RHI::StreamBufferView(*viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Tangent], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
+		m_PipelineCaches[0].SetVertexInputBuffer(Tangent_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Tangent], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
 
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_UV0] != null)
-		m_PipelineCaches[0].SetVertexInputBuffer(TexCoord0_Vertex, AZ::RHI::StreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_UV0], 0, vertexCount * sizeof(CFloat2), sizeof(CFloat2)));
+		m_PipelineCaches[0].SetVertexInputBuffer(TexCoord0_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_UV0], 0, vertexCount * sizeof(CFloat2), sizeof(CFloat2)));
 
 	// Linear atlas blending:
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_UV1] != null)
-		m_PipelineCaches[0].SetVertexInputBuffer(TexCoord1_Vertex, AZ::RHI::StreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_UV1], 0, vertexCount * sizeof(CFloat2), sizeof(CFloat2)));
+		m_PipelineCaches[0].SetVertexInputBuffer(TexCoord1_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_UV1], 0, vertexCount * sizeof(CFloat2), sizeof(CFloat2)));
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_AtlasId] != null)
-		m_PipelineCaches[0].SetVertexInputBuffer(TexFrameLerp_Vertex, AZ::RHI::StreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_AtlasId], 0, vertexCount * sizeof(float), sizeof(float)));
+		m_PipelineCaches[0].SetVertexInputBuffer(TexFrameLerp_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_AtlasId], 0, vertexCount * sizeof(float), sizeof(float)));
 
 	// Correct deformation:
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_UVRemap] != null)
-		m_PipelineCaches[0].SetVertexInputBuffer(UVRemap_Vertex, AZ::RHI::StreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_UVRemap], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
+		m_PipelineCaches[0].SetVertexInputBuffer(UVRemap_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_UVRemap], 0, vertexCount * sizeof(CFloat4), sizeof(CFloat4)));
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_UVFactors] != null)
-		m_PipelineCaches[0].SetVertexInputBuffer(UVFactors_Vertex, AZ::RHI::StreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_UVFactors], 0, vertexCount * sizeof(CFloat2), sizeof(CFloat2)));
+		m_PipelineCaches[0].SetVertexInputBuffer(UVFactors_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_UVFactors], 0, vertexCount * sizeof(CFloat2), sizeof(CFloat2)));
 	else if (viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_UVFactors] != null)
-		m_PipelineCaches[0].SetVertexInputBuffer(UVFactors_Vertex, AZ::RHI::StreamBufferView(*viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_UVFactors], 0, vertexCount * sizeof(CFloat2), sizeof(CFloat2)));
+		m_PipelineCaches[0].SetVertexInputBuffer(UVFactors_Vertex, AZ::RHI::MultiDeviceStreamBufferView(*viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_UVFactors], 0, vertexCount * sizeof(CFloat2), sizeof(CFloat2)));
 
 	const AZ::u32				idxSize = m_UseLargeIndices ? sizeof(AZ::u32) : sizeof(AZ::u16);
 	const AZ::RHI::IndexFormat	idxFormat = m_UseLargeIndices ? AZ::RHI::IndexFormat::Uint32 : AZ::RHI::IndexFormat::Uint16;
 	if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Indices] != null)
 	{
 		// Unsorted indices:
-		m_PipelineCaches[0].SetIndexBuffer(AZ::RHI::IndexBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Indices], 0, indexCount * idxSize, idxFormat));
+		m_PipelineCaches[0].SetIndexBuffer(AZ::RHI::MultiDeviceIndexBufferView(*viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Indices], 0, indexCount * idxSize, idxFormat));
 	}
 	else if (viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Indices] != null)
 	{
 		// Sorted indices:
-		m_PipelineCaches[0].SetIndexBuffer(AZ::RHI::IndexBufferView(*viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Indices], 0, indexCount * idxSize, idxFormat));
+		m_PipelineCaches[0].SetIndexBuffer(AZ::RHI::MultiDeviceIndexBufferView(*viewDependent.m_GenBuffers[CParticleBuffers::GenBuffer_Indices], 0, indexCount * idxSize, idxFormat));
 	}
 
 	m_PipelineCaches[0].SetRibbonSrgConstantValue(RibbonSrg::RendererFlags_ShaderRead, rendererCache->m_BasicDescription.m_RendererFlags);
 	m_PipelineCaches[0].SetRibbonSrgConstantValue(RibbonSrg::ParticleCount_ShaderRead, particleCount);
 
 	// Additional field buffers:
-	AZ::RHI::Ptr<AZ::RHI::Buffer>	diffuseColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Diffuse_Color());
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	diffuseColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Diffuse_Color());
 	if (diffuseColor != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = diffuseColor->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(CFloat4)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = diffuseColor->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(CFloat4)));
 		m_PipelineCaches[0].SetRibbonSrgBuffer(RibbonSrg::ParticleDiffuseColor_ShaderRead, buff);
 	}
-	AZ::RHI::Ptr<AZ::RHI::Buffer>	emissiveColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Emissive_EmissiveColor());
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	emissiveColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Emissive_EmissiveColor());
 	if (emissiveColor != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = emissiveColor->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount * 3, sizeof(float)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = emissiveColor->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount * 3, sizeof(float)));
 		m_PipelineCaches[0].SetRibbonSrgBuffer(RibbonSrg::ParticleEmissiveColor_ShaderRead, buff);
 	}
-	AZ::RHI::Ptr<AZ::RHI::Buffer>	distortionColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Distortion_Color());
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	distortionColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Distortion_Color());
 	if (distortionColor != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = distortionColor->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(CFloat4)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = distortionColor->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(CFloat4)));
 		m_PipelineCaches[0].SetRibbonSrgBuffer(RibbonSrg::ParticleDistortionColor_ShaderRead, buff);
 	}
-	AZ::RHI::Ptr<AZ::RHI::Buffer>	alphaRemapCursor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_AlphaRemap_Cursor());
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	alphaRemapCursor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_AlphaRemap_Cursor());
 	if (alphaRemapCursor != null)
 	{
-		AZ::RHI::Ptr<AZ::RHI::BufferView> buff = alphaRemapCursor->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(float)));
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = alphaRemapCursor->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(0, particleCount, sizeof(float)));
 		m_PipelineCaches[0].SetRibbonSrgBuffer(RibbonSrg::ParticleAlphaCursor_ShaderRead, buff);
 	}
 	}

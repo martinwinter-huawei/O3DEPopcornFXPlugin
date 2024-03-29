@@ -11,7 +11,7 @@
 
 #include <Atom/RPI.Public/Image/StreamingImage.h>
 #include <Atom/RPI.Public/Shader/Shader.h>
-#include <Atom/RHI/PipelineState.h>
+#include <Atom/RHI/MultiDevicePipelineState.h>
 #include <Atom/RPI.Public/Model/Model.h>
 
 namespace PopcornFX {
@@ -148,16 +148,16 @@ class	CPipelineStateCache : public CBaseCache
 public:
 	// Actual resources:
 	AZ::Data::Instance<AZ::RPI::Shader>			m_MaterialShader;
-	AZ::RHI::ConstPtr<AZ::RHI::PipelineState>	m_MaterialPipelineState;
+	AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>	m_MaterialPipelineState;
 
 	AZ::Data::Instance<AZ::RPI::Shader>			m_OpaqueDepthShader;
-	AZ::RHI::ConstPtr<AZ::RHI::PipelineState>	m_OpaqueDepthPipelineState;
+	AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>	m_OpaqueDepthPipelineState;
 
 	AZ::Data::Instance<AZ::RPI::Shader>			m_TransparentDepthMinShader;
-	AZ::RHI::ConstPtr<AZ::RHI::PipelineState>	m_TransparentDepthMinPipelineState;
+	AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>	m_TransparentDepthMinPipelineState;
 
 	AZ::Data::Instance<AZ::RPI::Shader>			m_TransparentDepthMaxShader;
-	AZ::RHI::ConstPtr<AZ::RHI::PipelineState>	m_TransparentDepthMaxPipelineState;
+	AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>	m_TransparentDepthMaxPipelineState;
 
 	virtual	void	UpdateRendererCache(CAtomRendererCache *rendererCache) const override;
 };
@@ -205,12 +205,12 @@ class	CGeometryCache : public CBaseCache
 public:
 	struct GPUBufferViews
 	{
-		AZ::RHI::IndexBufferView 			m_IndexBuffer;
-		AZ::RHI::StreamBufferView			m_PositionBuffer;
-		AZ::RHI::StreamBufferView			m_TangentBuffer;
-		AZ::RHI::StreamBufferView			m_NormalBuffer;
-		AZ::RHI::StreamBufferView			m_BitangentBuffer;
-		AZ::RHI::StreamBufferView			m_UVBuffer;
+		AZ::RHI::MultiDeviceIndexBufferView 			m_IndexBuffer;
+		AZ::RHI::MultiDeviceStreamBufferView			m_PositionBuffer;
+		AZ::RHI::MultiDeviceStreamBufferView			m_TangentBuffer;
+		AZ::RHI::MultiDeviceStreamBufferView			m_NormalBuffer;
+		AZ::RHI::MultiDeviceStreamBufferView			m_BitangentBuffer;
+		AZ::RHI::MultiDeviceStreamBufferView			m_UVBuffer;
 
 		u32									m_IndexCount;
 		CAABB								m_Bounds;

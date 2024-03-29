@@ -144,7 +144,7 @@ bool	CMeshBatchDrawer::MapBuffers(SRenderContext &ctx, const SRendererBatchDrawP
 			if (!PK_VERIFY(m_MappedAdditionalShaderInputs.PushBack().Valid()))
 				return false;
 			Drawers::SCopyFieldDesc			&desc = m_MappedAdditionalShaderInputs.Last();
-			AZ::RHI::Ptr<AZ::RHI::Buffer>	buff = GetCurBuffers().FindAdditionalFieldBuffer(curAdditionalShaderInput.m_Name);
+			AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	buff = GetCurBuffers().FindAdditionalFieldBuffer(curAdditionalShaderInput.m_Name);
 			const AZ::u64					typeByteSize = CBaseTypeTraits::Traits(curAdditionalShaderInput.m_Type).Size;
 			u8								*data = static_cast<u8*>(renderManager->MapBuffer(buff, particleCount * typeByteSize));
 
@@ -233,27 +233,27 @@ bool	CMeshBatchDrawer::EmitDrawCall(SRenderContext &ctx, const SRendererBatchDra
 		// Non constant data: matrices
 		if (viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Matrices] != null)
 		{
-			AZ::RHI::Ptr<AZ::RHI::BufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Matrices]->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(particleOffset, particleCount, sizeof(CFloat4x4)));
+			AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = viewIndependent.m_GenBuffers[CParticleBuffers::GenBuffer_Matrices]->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(particleOffset, particleCount, sizeof(CFloat4x4)));
 			m_PipelineCaches[i].SetMeshSrgBuffer(MeshSrg::Matrices_ShaderRead, buff);
 		}
 
 		// Non constant data: additionnal inputs
-		AZ::RHI::Ptr<AZ::RHI::Buffer>	diffuseColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Diffuse_Color());
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	diffuseColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Diffuse_Color());
 		if (diffuseColor != null)
 		{
-			AZ::RHI::Ptr<AZ::RHI::BufferView> buff = diffuseColor->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(particleOffset, meshParticleCount, sizeof(CFloat4)));
+			AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = diffuseColor->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(particleOffset, meshParticleCount, sizeof(CFloat4)));
 			m_PipelineCaches[i].SetMeshSrgBuffer(MeshSrg::ParticleDiffuseColor_ShaderRead, buff);
 		}
-		AZ::RHI::Ptr<AZ::RHI::Buffer>	emissiveColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Emissive_EmissiveColor());
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	emissiveColor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_Emissive_EmissiveColor());
 		if (emissiveColor != null)
 		{
-			AZ::RHI::Ptr<AZ::RHI::BufferView> buff = emissiveColor->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(particleOffset * 3, meshParticleCount * 3, sizeof(float)));
+			AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = emissiveColor->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(particleOffset * 3, meshParticleCount * 3, sizeof(float)));
 			m_PipelineCaches[i].SetMeshSrgBuffer(MeshSrg::ParticleEmissiveColor_ShaderRead, buff);
 		}
-		AZ::RHI::Ptr<AZ::RHI::Buffer>	alphaRemapCursor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_AlphaRemap_Cursor());
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	alphaRemapCursor = GetCurBuffers().FindAdditionalFieldBuffer(BasicRendererProperties::SID_AlphaRemap_Cursor());
 		if (alphaRemapCursor != null)
 		{
-			AZ::RHI::Ptr<AZ::RHI::BufferView> buff = alphaRemapCursor->GetBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(particleOffset, meshParticleCount, sizeof(float)));
+			AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> buff = alphaRemapCursor->BuildBufferView(AZ::RHI::BufferViewDescriptor::CreateStructured(particleOffset, meshParticleCount, sizeof(float)));
 			m_PipelineCaches[i].SetMeshSrgBuffer(MeshSrg::ParticleAlphaCursor_ShaderRead, buff);
 		}
 

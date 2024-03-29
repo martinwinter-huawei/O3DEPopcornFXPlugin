@@ -34,7 +34,7 @@ private:
 	PopcornFX::TArray<Drawers::SCopyFieldDesc>			m_MappedAdditionalShaderInputs;
 
 	// Atlas definition buffer:
-	AZ::RHI::Ptr<AZ::RHI::Buffer>				m_AtlasDefinition = null;
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>				m_AtlasDefinition = null;
 	u32											m_AtlasSubRectsCount = 0;
 };
 

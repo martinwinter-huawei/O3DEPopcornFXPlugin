@@ -207,7 +207,7 @@ bool	CAtomPipelineCache::InitFromRendererCacheIFN(const CAtomRendererCache *rend
 
 //----------------------------------------------------------------------------
 
-void	CAtomPipelineCache::SetBillboardingSrgBuffer(BillboardSrg::EBuffersSemantic semantic, const AZ::RHI::Ptr<AZ::RHI::BufferView> bufferView)
+void	CAtomPipelineCache::SetBillboardingSrgBuffer(BillboardSrg::EBuffersSemantic semantic, const AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> bufferView)
 {
 	if (semantic >= BillboardSrg::__Max_BuffersSemantic || !m_BillboardingSrgBuffBindIdx[semantic].IsValid())
 	{
@@ -219,7 +219,7 @@ void	CAtomPipelineCache::SetBillboardingSrgBuffer(BillboardSrg::EBuffersSemantic
 
 //----------------------------------------------------------------------------
 
-void	CAtomPipelineCache::SetRibbonSrgBuffer(RibbonSrg::EBuffersSemantic semantic, const AZ::RHI::Ptr<AZ::RHI::BufferView> bufferView)
+void	CAtomPipelineCache::SetRibbonSrgBuffer(RibbonSrg::EBuffersSemantic semantic, const AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> bufferView)
 {
 	if (semantic >= RibbonSrg::__Max_BuffersSemantic || !m_RibbonSrgBuffBindIdx[semantic].IsValid())
 	{
@@ -231,7 +231,7 @@ void	CAtomPipelineCache::SetRibbonSrgBuffer(RibbonSrg::EBuffersSemantic semantic
 
 //----------------------------------------------------------------------------
 
-void	CAtomPipelineCache::SetMeshSrgBuffer(MeshSrg::EBuffersSemantic semantic, const AZ::RHI::Ptr<AZ::RHI::BufferView> bufferView)
+void	CAtomPipelineCache::SetMeshSrgBuffer(MeshSrg::EBuffersSemantic semantic, const AZ::RHI::Ptr<AZ::RHI::MultiDeviceBufferView> bufferView)
 {
 	if (semantic >= MeshSrg::__Max_BuffersSemantic || !m_MeshSrgBuffBindIdx[semantic].IsValid())
 	{
@@ -243,7 +243,7 @@ void	CAtomPipelineCache::SetMeshSrgBuffer(MeshSrg::EBuffersSemantic semantic, co
 
 //----------------------------------------------------------------------------
 
-void	CAtomPipelineCache::SetMaterialSrgTexture(EMaterialSrgTexturesSemantic semantic, const AZ::RHI::ImageView *imageView)
+void	CAtomPipelineCache::SetMaterialSrgTexture(EMaterialSrgTexturesSemantic semantic, const AZ::RHI::MultiDeviceImageView *imageView)
 {
 	if (semantic >= __Max_MaterialSrgTexturesSemantic || !m_MaterialSrgTextureBindIdx[semantic].IsValid())
 	{
@@ -255,7 +255,7 @@ void	CAtomPipelineCache::SetMaterialSrgTexture(EMaterialSrgTexturesSemantic sema
 
 //----------------------------------------------------------------------------
 
-void	CAtomPipelineCache::SetVertexInputBuffer(EVertexInputSemantic semantic, const AZ::RHI::StreamBufferView &streamBufferView)
+void	CAtomPipelineCache::SetVertexInputBuffer(EVertexInputSemantic semantic, const AZ::RHI::MultiDeviceStreamBufferView &streamBufferView)
 {
 	if (semantic >= __Max_VertexInputSemantic || !m_VertexInputsIdx[semantic].Valid())
 	{
@@ -271,7 +271,7 @@ void	CAtomPipelineCache::SetVertexInputBuffer(EVertexInputSemantic semantic, con
 
 //----------------------------------------------------------------------------
 
-void	CAtomPipelineCache::SetIndexBuffer(const AZ::RHI::IndexBufferView &idxBufferView)
+void	CAtomPipelineCache::SetIndexBuffer(const AZ::RHI::MultiDeviceIndexBufferView &idxBufferView)
 {
 	m_IndexBuffer = idxBufferView;
 }
@@ -308,7 +308,7 @@ void	CAtomPipelineCache::Clear()
 {
 	// Reset vertex and index buffers:
 	m_VertexInputs.Clear();
-	m_IndexBuffer = AZ::RHI::IndexBufferView();
+	m_IndexBuffer = AZ::RHI::MultiDeviceIndexBufferView();
 }
 
 //----------------------------------------------------------------------------

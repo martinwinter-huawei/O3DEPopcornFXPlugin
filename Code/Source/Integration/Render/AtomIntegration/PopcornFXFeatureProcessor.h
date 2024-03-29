@@ -58,11 +58,11 @@ public:
 	CRenderManager		&GetRenderManager() { return m_RenderManager; }
 
 private:
-	const AZ::RHI::DrawPacket	*BuildDrawPacket(	const SAtomRenderContext::SDrawCall &pkfxDrawCall,
+	const AZ::RHI::MultiDeviceDrawPacket	*BuildDrawPacket(	const SAtomRenderContext::SDrawCall &pkfxDrawCall,
 													const AZ::RHI::ShaderResourceGroup *viewSrg,
 													AZ::RHI::DrawItemSortKey sortKey);
 
-	AZStd::vector<AZStd::unique_ptr<const AZ::RHI::DrawPacket>>	m_drawPackets;
+	AZStd::vector<AZStd::unique_ptr<const AZ::RHI::MultiDeviceDrawPacket>>	m_drawPackets;
 	CRenderManager												m_RenderManager;
 	const SSceneViews											*m_SceneViews = null;
 	CParticleMediumCollection									*m_MediumCollection = null;

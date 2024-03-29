@@ -8,10 +8,10 @@
 #if defined(O3DE_USE_PK)
 
 #include <pk_render_helpers/include/frame_collector/rh_frame_data.h>
-#include <Atom/RHI/Buffer.h>
-#include <Atom/RHI/DrawItem.h>
+#include <Atom/RHI/MultiDeviceBuffer.h>
+#include <Atom/RHI/MultiDeviceDrawItem.h>
 #include <Atom/RHI/DrawList.h>
-#include <Atom/RHI/PipelineState.h>
+#include <Atom/RHI/MultiDevicePipelineState.h>
 #include <Atom/RPI.Public/Scene.h>
 #include <Atom/RPI.Public/RPISystemInterface.h>
 #include <Atom/RPI.Public/Shader/ShaderResourceGroup.h>
@@ -45,20 +45,20 @@ struct	SAtomRenderContext : public SRenderContext
 
 		CAABB													m_BoundingBox;
 		AZ::RHI::DrawIndexed									m_DrawIndexed;
-		AZ::RHI::IndexBufferView								m_Indices;
-		TSemiDynamicArray<AZ::RHI::StreamBufferView, 0x10>		m_VertexInputs;
+		AZ::RHI::MultiDeviceIndexBufferView								m_Indices;
+		TSemiDynamicArray<AZ::RHI::MultiDeviceStreamBufferView, 0x10>		m_VertexInputs;
 		AZ::Data::Instance<AZ::RPI::ShaderResourceGroup>		m_RendererSrg;
 		AZ::Data::Instance<AZ::RPI::ShaderResourceGroup>		m_MaterialSrg;
 		AZ::Data::Instance<AZ::RPI::ShaderResourceGroup>		m_ObjectSrg;
 
-		AZ::RHI::ConstPtr<AZ::RHI::PipelineState>				m_MaterialPipelineState;
+		AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>				m_MaterialPipelineState;
 		AZ::RHI::DrawListTag									m_MaterialDrawList;
 
-		AZ::RHI::ConstPtr<AZ::RHI::PipelineState>				m_OpaqueDepthPipelineState;
+		AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>				m_OpaqueDepthPipelineState;
 		AZ::RHI::DrawListTag									m_OpaqueDepthDrawList;
-		AZ::RHI::ConstPtr<AZ::RHI::PipelineState>				m_TransparentDepthMinPipelineState;
+		AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>				m_TransparentDepthMinPipelineState;
 		AZ::RHI::DrawListTag									m_TransparentDepthMinDrawList;
-		AZ::RHI::ConstPtr<AZ::RHI::PipelineState>				m_TransparentDepthMaxPipelineState;
+		AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>				m_TransparentDepthMaxPipelineState;
 		AZ::RHI::DrawListTag									m_TransparentDepthMaxDrawList;
 	};
 

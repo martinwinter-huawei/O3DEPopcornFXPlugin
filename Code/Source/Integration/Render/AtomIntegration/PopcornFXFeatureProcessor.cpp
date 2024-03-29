@@ -13,7 +13,7 @@
 #include <pk_kernel/include/kr_profiler.h>
 
 #include <Atom/RPI.Public/View.h>
-#include <Atom/RHI/DrawPacketBuilder.h>
+#include <Atom/RHI/MultiDeviceDrawPacketBuilder.h>
 #include <Atom/RPI.Public/Scene.h>
 
 #include <Atom/RPI.Reflect/Asset/AssetUtils.h>
@@ -86,7 +86,7 @@ void	CPopcornFXFeatureProcessor::Render(const RenderPacket &packet)
 				if ((view->GetUsageFlags() & AZ::RPI::View::UsageShadow) != 0 && !castShadows)
 					continue;
 
-				const AZ::RHI::DrawPacket	*drawPacket = BuildDrawPacket(dc, view->GetRHIShaderResourceGroup(), dc.m_GlobalSortOverride);
+				const AZ::RHI::MultiDeviceDrawPacket	*drawPacket = BuildDrawPacket(dc, view->GetRHIShaderResourceGroup(), dc.m_GlobalSortOverride);
 				m_drawPackets.emplace_back(drawPacket);
 
 				const CFloat3		&bboxCenter = dc.m_BoundingBox.Center();
@@ -130,12 +130,12 @@ void	CPopcornFXFeatureProcessor::AppendLightParticles()
 	}
 }
 
-const AZ::RHI::DrawPacket	*CPopcornFXFeatureProcessor::BuildDrawPacket(	const SAtomRenderContext::SDrawCall &pkfxDrawCall,
+const AZ::RHI::MultiDeviceDrawPacket	*CPopcornFXFeatureProcessor::BuildDrawPacket(	const SAtomRenderContext::SDrawCall &pkfxDrawCall,
 																			const AZ::RHI::ShaderResourceGroup *viewSrg,
 																			AZ::RHI::DrawItemSortKey sortKey)
 {
 	AZ_UNUSED(viewSrg);
-	AZ::RHI::DrawPacketBuilder	dpBuilder;
+	AZ::RHI::MultiDeviceDrawPacketBuilder	dpBuilder;
 
 	dpBuilder.Begin(null);
 	dpBuilder.SetDrawArguments(pkfxDrawCall.m_DrawIndexed);
@@ -145,14 +145,14 @@ const AZ::RHI::DrawPacket	*CPopcornFXFeatureProcessor::BuildDrawPacket(	const SA
 
 	// Actual particle rendering:
 	{
-		AZ::RHI::DrawPacketBuilder::DrawRequest	materialDr;
+		AZ::RHI::MultiDeviceDrawPacketBuilder::MultiDeviceDrawRequest	materialDr;
 		materialDr.m_listTag = pkfxDrawCall.m_MaterialDrawList;
 		materialDr.m_pipelineState = pkfxDrawCall.m_MaterialPipelineState.get();
 #if PK_O3DE_MAJOR_VERSION >= 2205
-		materialDr.m_streamBufferViews = AZStd::span<const AZ::RHI::StreamBufferView>(	pkfxDrawCall.m_VertexInputs.RawDataPointer(),
+		materialDr.m_streamBufferViews = AZStd::span<const AZ::RHI::MultiDeviceStreamBufferView>(	pkfxDrawCall.m_VertexInputs.RawDataPointer(),
 																						pkfxDrawCall.m_VertexInputs.Count());
 #else
-		materialDr.m_streamBufferViews = AZStd::array_view<AZ::RHI::StreamBufferView>(	pkfxDrawCall.m_VertexInputs.RawDataPointer(),
+		materialDr.m_streamBufferViews = AZStd::array_view<AZ::RHI::MultiDeviceStreamBufferView>(	pkfxDrawCall.m_VertexInputs.RawDataPointer(),
 																						pkfxDrawCall.m_VertexInputs.Count());
 #endif
 
@@ -164,36 +164,36 @@ const AZ::RHI::DrawPacket	*CPopcornFXFeatureProcessor::BuildDrawPacket(	const SA
 	}
 
 #if PK_O3DE_MAJOR_VERSION >= 2205
-	AZStd::span<const AZ::RHI::StreamBufferView>	depthVtxInput;
+	AZStd::span<const AZ::RHI::MultiDeviceStreamBufferView>	depthVtxInput;
 #else
-	AZStd::array_view<AZ::RHI::StreamBufferView>	depthVtxInput;
+	AZStd::array_view<AZ::RHI::MultiDeviceStreamBufferView>	depthVtxInput;
 #endif
 
 	if (pkfxDrawCall.m_RendererType == Renderer_Billboard ||
 		pkfxDrawCall.m_RendererType == Renderer_Mesh)
 	{
 #if PK_O3DE_MAJOR_VERSION >= 2205
-		depthVtxInput = AZStd::span<const AZ::RHI::StreamBufferView>(	pkfxDrawCall.m_VertexInputs.RawDataPointer(),
+		depthVtxInput = AZStd::span<const AZ::RHI::MultiDeviceStreamBufferView>(	pkfxDrawCall.m_VertexInputs.RawDataPointer(),
 																		pkfxDrawCall.m_VertexInputs.Count());
 #else
-		depthVtxInput = AZStd::array_view<AZ::RHI::StreamBufferView>(	pkfxDrawCall.m_VertexInputs.RawDataPointer(),
+		depthVtxInput = AZStd::array_view<AZ::RHI::MultiDeviceStreamBufferView>(	pkfxDrawCall.m_VertexInputs.RawDataPointer(),
 																		pkfxDrawCall.m_VertexInputs.Count());
 #endif
 	}
 	else
 	{
 #if PK_O3DE_MAJOR_VERSION >= 2205
-		depthVtxInput = AZStd::span<const AZ::RHI::StreamBufferView>(	pkfxDrawCall.m_VertexInputs.RawDataPointer(),
+		depthVtxInput = AZStd::span<const AZ::RHI::MultiDeviceStreamBufferView>(	pkfxDrawCall.m_VertexInputs.RawDataPointer(),
 																		1);
 #else
-		depthVtxInput = AZStd::array_view<AZ::RHI::StreamBufferView>(	pkfxDrawCall.m_VertexInputs.RawDataPointer(),
+		depthVtxInput = AZStd::array_view<AZ::RHI::MultiDeviceStreamBufferView>(	pkfxDrawCall.m_VertexInputs.RawDataPointer(),
 																		1);
 #endif
 	}
 
 	if (pkfxDrawCall.m_OpaqueDepthPipelineState != null)
 	{
-		AZ::RHI::DrawPacketBuilder::DrawRequest	opaqueDepthDr;
+		AZ::RHI::MultiDeviceDrawPacketBuilder::MultiDeviceDrawRequest	opaqueDepthDr;
 		opaqueDepthDr.m_listTag = pkfxDrawCall.m_OpaqueDepthDrawList;
 		opaqueDepthDr.m_pipelineState = pkfxDrawCall.m_OpaqueDepthPipelineState.get();
 		opaqueDepthDr.m_streamBufferViews = depthVtxInput;
@@ -203,14 +203,14 @@ const AZ::RHI::DrawPacket	*CPopcornFXFeatureProcessor::BuildDrawPacket(	const SA
 	else if (	pkfxDrawCall.m_TransparentDepthMinPipelineState != null &&
 				pkfxDrawCall.m_TransparentDepthMaxPipelineState != null)
 	{
-		AZ::RHI::DrawPacketBuilder::DrawRequest	transparentDepthMinDr;
+		AZ::RHI::MultiDeviceDrawPacketBuilder::MultiDeviceDrawRequest	transparentDepthMinDr;
 		transparentDepthMinDr.m_listTag = pkfxDrawCall.m_TransparentDepthMinDrawList;
 		transparentDepthMinDr.m_pipelineState = pkfxDrawCall.m_TransparentDepthMinPipelineState.get();
 		transparentDepthMinDr.m_streamBufferViews = depthVtxInput;
 		transparentDepthMinDr.m_sortKey = sortKey;
 		dpBuilder.AddDrawItem(transparentDepthMinDr);
 
-		AZ::RHI::DrawPacketBuilder::DrawRequest	transparentDepthMaxDr;
+		AZ::RHI::MultiDeviceDrawPacketBuilder::MultiDeviceDrawRequest	transparentDepthMaxDr;
 		transparentDepthMaxDr.m_listTag = pkfxDrawCall.m_TransparentDepthMaxDrawList;
 		transparentDepthMaxDr.m_pipelineState = pkfxDrawCall.m_TransparentDepthMaxPipelineState.get();
 		transparentDepthMaxDr.m_streamBufferViews = depthVtxInput;

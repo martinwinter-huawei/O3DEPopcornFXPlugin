@@ -59,7 +59,7 @@ private:
 	};
 
 	AZ::Data::Instance<AZ::RPI::Shader>			&_GetShaderSlot(EAssetType type, const PPipelineStateCache &pipelineState) const;
-	AZ::RHI::ConstPtr<AZ::RHI::PipelineState>	&_GetPipelineStateSlot(EAssetType type, const PPipelineStateCache &pipelineState) const;
+	AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>	&_GetPipelineStateSlot(EAssetType type, const PPipelineStateCache &pipelineState) const;
 	AZ::Data::Instance<AZ::RPI::StreamingImage>	&_GetStreamingImageSlot(EAssetType type, const PMaterialCache &material) const;
 
 	struct	SAssetDependencies
@@ -99,7 +99,7 @@ private:
 	void										_OnAssetReady(AZ::Data::Asset<AZ::Data::AssetData> asset);
 	void										_OnShaderVariantsReloaded(	const AZ::Data::AssetId &shaderId,
 																			const AZ::RPI::ShaderVariantId &shaderVariantId);
-	AZ::RHI::ConstPtr<AZ::RHI::PipelineState>	_CreatePipelineStateCache(	AZ::RPI::Shader &shader,
+	AZ::RHI::ConstPtr<AZ::RHI::MultiDevicePipelineState>	_CreatePipelineStateCache(	AZ::RPI::Shader &shader,
 																			AZ::RPI::ShaderVariant &shaderVariant,
 																			EAssetType assetType,
 																			const SPipelineStateCacheKey &key);

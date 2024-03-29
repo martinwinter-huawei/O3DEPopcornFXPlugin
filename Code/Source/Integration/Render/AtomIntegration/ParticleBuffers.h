@@ -10,7 +10,7 @@
 #include "AtomFrameCollectorTypes.h"
 #include "AtomPipelineCache.h"
 #include "AtomRendererCache.h"
-#include <Atom/RHI/Buffer.h>
+#include <Atom/RHI/MultiDeviceBuffer.h>
 #include <pk_kernel/include/kr_memoryviews.h>
 #include <pk_kernel/include/kr_mem.h>
 #include <pk_maths/include/pk_numeric_tools.h>
@@ -34,7 +34,7 @@ public:
 
 	void								ResizeOrCreateAdditionalFieldBufferIFN(CStringId additionalFieldName, CRenderManager *renderManager, AZ::u64 bufferSize);
 	void								UnmapAllAdditionalFieldBuffers(CRenderManager *renderManager);
-	AZ::RHI::Ptr<AZ::RHI::Buffer>		FindAdditionalFieldBuffer(CStringId additionalFieldName);
+	AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>		FindAdditionalFieldBuffer(CStringId additionalFieldName);
 
 	void								Reset();
 	void								UnmapAll(CRenderManager *renderManager);
@@ -76,16 +76,16 @@ public:
 
 	struct	SViewIndependent
 	{
-		AZ::RHI::Ptr<AZ::RHI::Buffer>	m_GenBuffers[__GenBuffer_Count];
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	m_GenBuffers[__GenBuffer_Count];
 		// For GPU billboarding:
-		AZ::RHI::Ptr<AZ::RHI::Buffer>	m_DrawRequests;
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	m_DrawRequests;
 
 		SViewIndependent() { Mem::Clear(*this); }
 	};
 
 	struct	SViewDependent
 	{
-		AZ::RHI::Ptr<AZ::RHI::Buffer>	m_GenBuffers[__GenBuffer_Count];
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	m_GenBuffers[__GenBuffer_Count];
 
 		SViewDependent() { Mem::Clear(*this); }
 	};
@@ -102,7 +102,7 @@ private:
 	struct	SAdditionalField
 	{
 		CStringId						m_Name;
-		AZ::RHI::Ptr<AZ::RHI::Buffer>	m_Buffer;
+		AZ::RHI::Ptr<AZ::RHI::MultiDeviceBuffer>	m_Buffer;
 
 		SAdditionalField() { }
 		SAdditionalField(const CStringId &name)
